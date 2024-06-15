@@ -6,13 +6,7 @@ import { UserValidation } from "@/lib/validations/user";
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import Image from "next/image";
 import { ChangeEvent, useState } from "react";
@@ -97,9 +91,9 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
       }
     )
 
-    if(pathname === '/profile/edit'){
+    if (pathname === '/profile/edit') {
       router.back()
-    }else{
+    } else {
       router.push('/')
     }
   }
@@ -144,6 +138,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                   onChange={(e) => handleImage(e, field.onChange)}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -161,6 +156,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -178,6 +174,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -195,6 +192,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
