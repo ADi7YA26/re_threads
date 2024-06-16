@@ -4,7 +4,7 @@ import "../globals.css"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: 'Auth | ReThread',
+  title: 'Auth - ReThread',
   description: 'A Next13 ReThreads Application'
 }
 
@@ -15,7 +15,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="en">
         <body className={`${inter.className} bg-dark-1`}>
-          {children}
+          <div className="w-full flex justify-center items-center min-h-sd">
+            {children}
+          </div>
         </body>
       </html>
     </ClerkProvider>
