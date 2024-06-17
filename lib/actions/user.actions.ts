@@ -5,6 +5,7 @@ import User from "../models/user.models";
 import { connectToDB } from "../mongoose"
 import Thread from "../models/thread.models";
 import { FilterQuery, SortOrder } from "mongoose";
+import Community from "../models/community.models";
 
 interface Params {
   userId: string,
@@ -53,10 +54,11 @@ export async function fetchUser(userId: string) {
 
     return await User
       .findOne({ id: userId })
-    // .populate({
-    //   path: 'communities',
-    //   model: Community
-    // })
+      .populate({
+        path: 'communities',
+        model: Community,
+      });
+
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`)
   }
@@ -67,26 +69,31 @@ export async function fetchUserPosts(userId: string) {
     connectToDB();
 
     // find all threads authored by user with the given userId
-    const threads = await User.findOne({ id: userId })
-      .populate({
-        path: 'threads',
-        model: Thread,
-        populate: {
+    const threads = await User.findOne({ id: userId }).populate({
+      path: 'threads',
+      model: Thread,
+      populate: [
+        {
+          path: "community",
+          model: Community,
+          select: "name id image _id",
+        },
+        {
           path: 'children',
           model: Thread,
           populate: {
-            path: 'author',
+            path: "author",
             model: User,
-            select: 'name image id'
-          }
-        }
-      })
+            select: "name image id",
+          },
+        },
+      ],
+    });
 
-    // TODO : populate community
     return threads;
 
   } catch (error: any) {
-    throw new Error(`Failed to fetch user posts: ${error.message}`)
+    throw new Error(`Failed to fetch user threads: ${error.message}`)
   }
 }
 
@@ -111,7 +118,7 @@ export async function fetchUsers({
     const regex = new RegExp(searchString, "i");
 
     const query: FilterQuery<typeof User> = {
-      id: { $ne: userId }
+      id: { $ne: userId } // Exclude the current user from the results.
     }
 
     if (searchString.trim() !== "") {
@@ -128,11 +135,11 @@ export async function fetchUsers({
       .skip(skipAmount)
       .limit(pageSize)
 
-    const totalUserCount = await User.countDocuments(query)
+    const totalUsersCount = await User.countDocuments(query)
 
     const users = await userQuery.exec();
 
-    const isNext = totalUserCount > skipAmount + users.length;
+    const isNext = totalUsersCount > skipAmount + users.length;
 
     return { users, isNext }
 
@@ -155,7 +162,7 @@ export async function getActivity(userId: string) {
 
     const replies = await Thread.find({
       _id: { $in: childThreadIds },
-      author: { $ne: userId }
+      author: { $ne: userId } // Exclude threads authored by the same user
     }).populate({
       path: 'author',
       model: User,
