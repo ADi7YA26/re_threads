@@ -44,7 +44,7 @@ async function Page({ params }: { params: { id: string } }) {
           </TabsList>
 
           {profileTabs.map((tab) => (
-            <TabsContent key={`content=${tab.label}`} value={tab.value} className="w-full text-light-1">
+            <TabsContent key={`content-${tab.label}`} value={tab.value} className="w-full text-light-1">
               <ThreadsTab
                 currentUserId={user.id}
                 accountId={userInfo.id}

@@ -156,7 +156,7 @@ export async function addCommentToThread(
   }
 }
 
-export async function fetchAllChildThreads(threadId: string): Promise<any[]> {
+async function fetchAllChildThreads(threadId: string): Promise<any[]> {
   const childThreads = await Thread.find({ parentId: threadId })
 
   const descendantThreads = [];
